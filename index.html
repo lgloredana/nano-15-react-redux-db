@@ -98,6 +98,15 @@
                     return state;
             }
         }
+        
+        function loading(state = true, action) {
+            switch (action.type) {
+                case RECEIVE_DATA :
+                    return false;
+                default :
+                    return true;
+            }
+        }
 
         const checker = (store) => (next) => (action) => {
             if ( action.type === ADD_TODO ){
@@ -121,7 +130,8 @@
                                 Redux.combineReducers(
                                     {
                                         todos: todo,
-                                        goals: goal
+                                        goals: goal,
+                                        loading
                                     }),
                                 Redux.applyMiddleware(checker, logger));
 
@@ -238,8 +248,9 @@
 
             render () {
                 const { store } = this.props;
-                const { todos, goals } = store.getState();
+                const { todos, goals, loading } = store.getState();
                 return (
+                    loading ? <h1>Loading</h1> :
                      <div>
                         <Todos todos={todos} store={store}/>
                         <Goals goals={goals} store={store}/>
