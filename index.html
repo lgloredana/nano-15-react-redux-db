@@ -104,7 +104,7 @@
                 case RECEIVE_DATA :
                     return false;
                 default :
-                    return true;
+                    return state;
             }
         }
 
@@ -175,6 +175,12 @@
             removeTodo = (todo) => {
                 const { store } = this.props;
                 store.dispatch(removeTodoAction(todo.id));
+
+                return API.deleteTodo(todo.id)
+                    .catch(() => {
+                        alert('Error on deleting. Try again!');
+                        this.props.store.dispatch(addTodoAction(todo));
+                    });
             };
 
             toggleTodo = (id) => {
@@ -214,6 +220,12 @@
 
             removeGoal = (goal) => {
                 this.props.store.dispatch(removeGoalAction(goal.id));
+
+                API.deleteGoal(goal.id)
+                    .catch(() => {
+                        alert('Error on deleting. Try again!');
+                        this.props.store.dispatch(addGoalAction(goal));
+                    });
             };
 
             render(){
@@ -235,15 +247,13 @@
         class App extends React.Component {
             componentDidMount () {
                 const { store } = this.props;
-                store.subscribe(() => this.forceUpdate());
+
 
                 Promise.all([API.fetchGoals(), API.fetchTodos()]).then(([goals, todos])=> {
                     store.dispatch(receiveDataAction(todos, goals));
-                    console.log('-----show goals');
-                    console.log(goals);
-                    console.log('-----show todos');
-                    console.log(todos);
                 })
+
+                store.subscribe(() => this.forceUpdate());
             }
 
             render () {
