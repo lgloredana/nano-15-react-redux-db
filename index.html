@@ -257,7 +257,7 @@
 
                 Promise.all([API.fetchGoals(), API.fetchTodos()]).then(([goals, todos])=> {
                     store.dispatch(receiveDataAction(todos, goals));
-                })
+                });
 
                 store.subscribe(() => this.forceUpdate());
             }
